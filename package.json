@@ -1,0 +1,39 @@
+{
+  "name": "@joingonka/n8n-nodes-joingonka",
+  "version": "0.1.0",
+  "description": "n8n community node for JoinGonka OpenAI-compatible API gateway",
+  "license": "Apache-2.0",
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n-nodes",
+    "n8n",
+    "ai",
+    "joingonka"
+  ],
+  "homepage": "https://gate.joingonka.ai",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "files": [
+    "dist"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/JoinGonkaApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/JoinGonka/JoinGonka.node.js"
+    ]
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "n8n-workflow": "*",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  }
+}
