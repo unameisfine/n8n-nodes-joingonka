@@ -80,15 +80,19 @@ export class JoinGonka implements INodeType {
         displayName: 'Model',
         name: 'model',
         type: 'string',
-        default: 'Qwen/Qwen3-235B-A22B-Instruct-2507-FP8',
-        required: true,
+        // Умолчания-идентификатора НЕТ намеренно: состав моделей сети меняется голосованием,
+        // и зашитый id однажды перестаёт существовать (в 0.1.0 здесь стояла Qwen3, ушедшая
+        // из сети в июне 2026, — нода «из коробки» отвечала 400 Model not found). Пустое
+        // поле = модель шлюза по умолчанию: поле model в запрос не попадает.
+        default: '',
+        placeholder: 'empty = gateway default model',
         displayOptions: {
           show: {
             operation: ['chatCompletion'],
           },
         },
         description:
-          'Model identifier. Use the List Models operation to discover available models.',
+          "Model identifier from the List Models operation. Leave empty to use the gateway's current default model — the set of models on the network changes over time.",
       },
       {
         displayName: 'Messages',
@@ -172,7 +176,7 @@ export class JoinGonka implements INodeType {
           });
         } else if (operation === 'chatCompletion') {
           // Читаем параметры ноды.
-          const model = this.getNodeParameter('model', i) as string;
+          const model = ((this.getNodeParameter('model', i, '') as string) ?? '').trim();
           const messagesRaw = this.getNodeParameter('messages', i) as string | IDataObject[];
           const temperature = this.getNodeParameter('temperature', i, 0.7) as number;
           const maxTokens = this.getNodeParameter('maxTokens', i, 1024) as number;
@@ -203,8 +207,9 @@ export class JoinGonka implements INodeType {
           }
 
           // Собираем тело запроса в формате OpenAI Chat Completions.
+          // Пустая модель в запрос не идёт — шлюз подставит свою модель по умолчанию.
           const body: JsonObject = {
-            model,
+            ...(model ? { model } : {}),
             messages: messages as JsonObject[],
             temperature,
             max_tokens: maxTokens,

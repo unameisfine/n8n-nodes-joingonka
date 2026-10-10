@@ -24,7 +24,7 @@ Inside your self-hosted n8n instance:
 
 1. Add a **JoinGonka** node.
 2. Set **Operation** to `Chat Completion`.
-3. Set **Model** to `Qwen/Qwen3-235B-A22B-Instruct-2507-FP8` (default).
+3. Leave **Model** empty to use the gateway's default model, or paste an id returned by `List Models` (the set of models on the network changes over time).
 4. In **Messages**, enter:
    ```json
    [{"role":"user","content":"Say hello"}]
